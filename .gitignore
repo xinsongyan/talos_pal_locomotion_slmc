@@ -2,3 +2,4 @@
 *~
 *.bag
 .idea
+cmake-build-debug
