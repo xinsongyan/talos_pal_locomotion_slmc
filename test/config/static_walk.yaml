@@ -1,0 +1,2 @@
+static_walk_action_parameters:
+  step_rotational_bounds: [-1., 1.]

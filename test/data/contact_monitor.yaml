@@ -1,0 +1,27 @@
+TestParameters:
+    ds_duration_sec: 0.1
+    ss_duration_sec: 0.7
+
+    foot_step_position_adjustment: false
+    foot_step_time_adjustment: false
+
+    test_duration_sec: 5.0
+
+    floating_base_topic: "/floating_base_pose_simulated"
+    joint_states_topic: "/joint_states"
+
+    left_foot_link: left_sole_link
+    right_foot_link: right_sole_link
+
+    steps:
+        - left_or_right: RIGHT
+          position: [0.2, -0.1]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [0.3, 0.1]
+          orientation_angle: 0
+
+        - left_or_right: RIGHT
+          position: [0.4, -0.1]
+          orientation_angle: 0

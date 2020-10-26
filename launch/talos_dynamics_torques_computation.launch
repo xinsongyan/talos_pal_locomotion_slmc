@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="robot" default="full_v2" />
+  <arg name="controller_name" default="biped_inverse_dynamics_monitor"/>
+  <arg name="local_joint_control_type" default="no_control"/>
+  <arg name="local_joint_control_pkg" default="pal_local_joint_control"/>
+
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/biped_inverse_dynamics_monitor.yaml" ns="$(arg controller_name)"/>
+
+  <!-- Local joint control -->
+  <group if="$(eval arg('robot') == 'full_v2')">
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="$(arg robot)"/>
+    </include>
+  </group>
+
+  <!-- Spawn controller -->
+  <node name="inverse_dynamics_monitor_spawner"
+        pkg="controller_manager" type="spawner" output="screen"
+        args="$(arg controller_name)" />
+
+</launch>

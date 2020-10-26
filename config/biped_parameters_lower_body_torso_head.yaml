@@ -1,0 +1,3 @@
+z_height: 0.80
+foot_contact_thresh: 150
+minimum_contact_force: 20.0

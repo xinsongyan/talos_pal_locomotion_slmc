@@ -1,0 +1,96 @@
+estimator_type: legged_state_estimator::KinematicStateEstimator
+
+estimator_parameters:
+  robot_model_chains: []
+  fix_yaw: true
+  freeze_foot_height: false
+  gravity: [0., 0., -9.81]
+
+  use_imu_filtered_linear_acc: true
+  use_imu_filtered_angular_vel: true
+  use_filtered_joint_vel: false
+
+  return_estimated_angular_vel: false
+  return_estimated_joint_vel: false
+
+  regularization: 1e-6
+  # Weights
+  foot_linear_vel_weight: 10.0
+  angular_vel_weight: 1.0
+  joint_vel_weight: 0.01
+  linear_vel_weight: 10.0
+
+  link_parameters:  
+    - id: right_sole_link
+      estimate_position: true
+      estimate_orientation: false
+      sole_link_name: right_sole_link
+      ankle_link_name: leg_right_5_link
+      fixed_point_type: SOLE
+
+    - id: left_sole_link
+      estimate_position: true
+      estimate_orientation: false
+      sole_link_name: left_sole_link
+      ankle_link_name: leg_left_5_link
+      fixed_point_type: SOLE
+
+  imu_link_frame_name: imu_link
+
+  linear_acceleration_filter_type: FirstOrderFilter3d
+  linear_acceleration_filter_params:
+    filter_parameters:
+     - order: 5
+       type: LowPass
+       composition_type: Sequence
+       cutoff1: 100.0
+       cutoff2: 0.0
+
+  angular_velocity_filter_type: FirstOrderFilter3d
+  angular_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        cutoff1: 100.0
+        cutoff2: 0.0
+
+  base_to_world_linear_velocity_filter_type: FirstOrderFilter3d
+  base_to_world_linear_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        cutoff1: 100.0
+        cutoff2: 0.0
+
+  base_to_world_angular_velocity_filter_type: FirstOrderFilter3d
+  base_to_world_angular_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        cutoff1: 100.0
+        cutoff2: 0.0
+
+  joint_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: BandReject
+        composition_type: Sequence
+        cutoff1: 12.0
+        cutoff2: 18.0
+
+  enable_bias_estimation: true
+  bias_estimation_parameters:
+    initial_imu_bias: [0., 0., 0.]
+
+    bias_filter_parameters:
+      filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        cutoff1: 0.01
+        cutoff2: 0.0
+  
+

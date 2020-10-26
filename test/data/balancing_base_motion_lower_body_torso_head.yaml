@@ -1,0 +1,32 @@
+TestParameters:
+    model_name: lower_body_torso_head
+
+    final_position_tolerance: [0.05, 0.05, 0.12]
+
+    com_control_topic: "/biped_walking_dcm_controller/com_position_goal"
+    com_control_frame: "ankle_midpoint"
+
+    position_control_goal_tolerance:
+        position: 0.2
+        velocity: 5.0
+        acceleration: 5.0
+        name: ""
+        time_sec: 10
+
+    subscriber_waiting_time_sec: 50
+
+    floating_base_topic: "/floating_base_pose_simulated"
+
+    goals:
+        - desired_com_position: [0.0, 0.06, 0.71]
+          expected_base_position: [0.0, 0.09, 1.0]
+          duration_sec: 10.0
+
+        - desired_com_position: [0.0, -0.06, 0.71]
+          expected_base_position: [0.0, -0.09, 1.0]
+          duration_sec: 20.0
+
+        - desired_com_position: [0.0, 0.06, 0.71]
+          expected_base_position: [0.0, 0.09, 1.0]
+          duration_sec: 20.0
+

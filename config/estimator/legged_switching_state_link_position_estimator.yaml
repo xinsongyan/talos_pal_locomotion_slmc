@@ -1,0 +1,76 @@
+estimator_type: legged_state_estimator::LeggedSwitchingStateEstimator
+
+estimator_parameters:
+
+  use_filtered_linear_acceleration: false
+  use_filtered_angular_velocity: false
+
+  return_base_to_world_linear_velocity_filtered: false
+  return_base_to_world_angular_velocity_filtered: false
+
+  leg_stance_position_bias_covariance: 1e-4
+  leg_stance_orientation_bias_covariance: 1e-4
+  leg_swing_position_bias_covariance: 10.
+  leg_swing_orientation_bias_covariance: 10.
+  leg_position_psedudo_measurement_covariance:  1e-9
+  leg_orientation_pseudo_measurement_covariance:  1e-9
+  imu_link_frame_name: imu_link
+
+  link_parameters: 
+    - id: right_sole_link
+      estimate_position: true
+      estimate_orientation: false
+      sole_link_name: right_sole_link
+      ankle_link_name: leg_right_5_link
+      fixed_point_type: ANKLE
+
+    - id: left_sole_link
+      estimate_position: true
+      estimate_orientation: false
+      sole_link_name: left_sole_link
+      ankle_link_name: leg_left_5_link
+      fixed_point_type: ANKLE
+    
+  linear_acceleration_filter_type: FirstOrderFilter3d
+  linear_acceleration_filter_params:
+    filter_parameters:
+     - order: 5
+       type: LowPass
+       composition_type: Sequence
+       
+       cutoff1: 150.0
+       cutoff2: 0.0
+
+  angular_velocity_filter_type: FirstOrderFilter3d
+  angular_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        
+        cutoff1: 150.0
+        cutoff2: 0.0
+
+  base_to_world_linear_velocity_filter_type: FirstOrderFilter3d
+  base_to_world_linear_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        
+        cutoff1: 100.0
+        cutoff2: 0.0
+
+  base_to_world_angular_velocity_filter_type: FirstOrderFilter3d
+  base_to_world_angular_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        
+        cutoff1: 100.0
+        cutoff2: 0.0
+   
+     
+
+  

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="robot"/>
+  <arg name="speedrun"/>
+  <arg name="gui" default="false"/>
+  <arg name="dt"  default="0.0005"/>
+  <arg name="headless"/>
+
+  <include file="$(find talos_pal_physics_simulator)/launch/talos_pal_physics_simulator_parameters.launch" >
+    <arg name="robot" value="$(arg robot)"/>
+  </include>
+
+  <include file="$(find pal_physics_simulator)/launch/pal_physics_simulator_parameters.launch">
+    <arg name="speedrun" value="$(arg speedrun)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="dt"       value="$(arg dt)"/>
+  </include>
+
+  <include file="$(find pal_physics_simulator)/launch/pal_physics_simulator.launch">
+    <arg name="valgrind" value="false" />
+    <arg name="debug" value="false" />
+  </include>
+
+  <group if="$(arg gui)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find talos_pal_locomotion)/config/rviz/pal_physics_simulator.rviz" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  </group>
+
+  <include file="$(find talos_controller_configuration)/launch/bringup_controllers.launch" />
+
+</launch>

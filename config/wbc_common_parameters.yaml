@@ -1,0 +1,86 @@
+com_xy_task_weight: 10.
+com_z_task_weight: 8.
+orientation_base_link_weight: 2.
+orientation_upper_torso_weight: 1.
+ds_force_distribution_weight: 0.01
+ds_normal_distribution_weight: 0.0 # disabled in the code
+force_regularization_weight: 0.005
+torque_regularization_weight: 0.005
+joint_torque_regularization_weight: 1e-5
+swing_leg_position_weight: 2.
+swing_leg_orientation_weight: 4.
+angular_momentum_weight: 0.05
+cop_tracking_weight: 0.05
+upper_body_joint_reference_weight: 0.1
+end_effector_position_weight: 0.0
+end_effector_orientation_weight: 0.0
+
+com_xy_p_gain: 50.
+com_xy_d_gain: 5.
+com_xy_critically_damped: false
+com_z_p_gain: 60.
+com_z_d_gain: 15.
+com_z_critically_damped: false
+orientation_base_link_p_gain: 40.
+orientation_base_link_d_gain: 0.
+orientation_base_link_critically_damped: true
+orientation_upper_torso_p_gain: 50.
+orientation_upper_torso_d_gain: 0.
+orientation_upper_torso_critically_damped: true
+end_effector_position_p_gain: 30
+end_effector_orientation_p_gain: 30
+
+swing_leg_position_xy_p_gain: 60.
+swing_leg_position_z_p_gain: 60.
+swing_leg_orientation_roll_pitch_p_gain: 60.
+swing_leg_orientation_yaw_p_gain: 60.
+
+foot_relative_stance_xy_gain: 5
+foot_relative_stance_yaw_gain: 5
+
+# Safer to use the relative gains
+stance_leg_position_xy_p_gain: 0. # AS: deprecated and must be removed
+stance_leg_position_z_p_gain: 0. # AS: deprecated and must be removed
+stance_leg_orientation_roll_pitch_p_gain: 0. # AS: deprecated and must be removed
+stance_leg_orientation_yaw_p_gain: 0. # AS: deprecated and must be removed
+
+stance_foot_position_xy_gains:
+  p_gain: 0.0
+  d_gain: 0.0
+  critically_damped: true
+stance_foot_position_z_gains:
+  p_gain: 0.0
+  d_gain: 0.0
+  critically_damped: true
+stance_foot_orientation_roll_pitch_gains:
+  p_gain: 0.0
+  d_gain: 0.0
+  critically_damped: true
+stance_foot_orientation_yaw_gains:
+  p_gain: 0.0
+  d_gain: 0.0
+  critically_damped: true
+
+upper_body_joint_reference_p_gain: 35.
+
+friction_mu: 0.3
+torsion_friction_coef: 0.01
+
+angular_momentum_gain: [0., 0., 0.]
+
+torque_limit_factor: 1.0
+
+formulation: dynamics_reduced_friction_cone
+
+cop_margin_x: 0.01
+cop_margin_y: 0.01
+
+enable_joint_position_limits: false
+enable_joint_torque_limits: false
+
+minium_unilateral_force: 5.0
+
+physics_parameters:
+   contact_task_type: CONTACT_TASK_CARTESIAN_IMPEDANCE
+   contact_task_velocity_suppression_gain: 0.
+

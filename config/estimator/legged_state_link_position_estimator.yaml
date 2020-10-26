@@ -1,0 +1,50 @@
+controller_parameters:
+  estimator_type: legged_state_estimator::LeggedStateEstimator
+
+estimator_parameters:
+  leg_stance_position_bias_covariance: 1e-2
+  leg_stance_orientation_bias_covariance: 1e-2
+  leg_swing_position_bias_covariance: 10.
+  leg_swing_orientation_bias_covariance: 10.
+  leg_position_psedudo_measurement_covariance:  1e-5
+  leg_orientation_pseudo_measurement_covariance:  10-5
+  imu_link_frame_name: imu_link
+
+  link_parameters: 
+    
+    - link_name: right_sole_link
+      estimate_position: true
+      estimate_orientation: false
+
+    - link_name: left_sole_link
+      estimate_position: true
+      estimate_orientation: false
+    
+  linear_acceleration_filter_params:
+    filter_parameters:
+     - order: 5
+       type: LowPass
+       composition_type: Sequence
+       
+       cutoff1: 150.0
+       cutoff2: 0.0
+
+  angular_velocity_filter_params:
+    filter_parameters:
+      - order: 5
+        type: LowPass
+        composition_type: Sequence
+        
+        cutoff1: 150.0
+        cutoff2: 0.0
+
+  orientation_differentiator:
+    order: 5
+    
+    differentiator_type: OneSide
+    differentiator_order: FirstOrder
+
+     
+     
+
+  

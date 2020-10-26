@@ -1,0 +1,47 @@
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find talos_pal_locomotion)/test/rosconsole.config"/>
+
+  <arg name="robot" default="full_v2"/>
+  <arg name="gui" default="true"/>
+  <arg name="speedrun" default="true"/>
+  <arg name="headless" default="true"/>
+
+  <arg name="estimator" default="estimator_simulator_feedback"/>
+
+  <arg name="local_joint_control_type" default="direct_torque_control"/>
+  <arg name="local_joint_control_pkg" default="pal_local_joint_control"/>
+
+  <param name="/use_sim_time" value="true" type="bool"/>
+
+  <!-- Load TALOS description -->
+  <include file="$(find talos_description)/robots/upload.launch">
+      <arg name="foot_collision" default="thinbox"/>
+      <arg name="robot" value="$(arg robot)" />
+  </include>
+
+  <include file="$(find talos_pal_locomotion)/launch/robot_control_parameters.launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="estimator" value="$(arg estimator)"/>
+    <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+    <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)"/>
+  </include>
+
+
+  <include file="$(find talos_pal_locomotion)/launch/simulator/gazebo.launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="speedrun" value="$(arg speedrun)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+
+  <rosparam command="load" file="$(find talos_pal_locomotion)/test/data/contact_monitor.yaml" />
+  <param name="/TestParameters/model_name" value="$(arg robot)" type="string" />
+
+  <!-- test name must be parametrized to prevent overriding of results -->
+  <test
+    test-name="contact_monitor_test__simulator_robot_$(arg robot)__estimator_$(arg estimator)"
+    pkg="talos_pal_locomotion"
+    type="contact_monitor_test" time-limit="60.0"/>
+
+</launch>

@@ -1,0 +1,23 @@
+estimator_type: legged_state_estimator::LeggedStateEstimator
+
+estimator_parameters:
+  leg_stance_position_bias_covariance: 0.000001
+  leg_stance_orientation_bias_covariance: 0.000001
+  leg_swing_position_bias_covariance: 1000000.
+  leg_swing_orientation_bias_covariance: 1000000.
+  leg_position_psedudo_measurement_covariance:  0.0000000001
+  leg_orientation_pseudo_measurement_covariance:  0.0000000001
+
+  link_parameters: 
+    
+    - link_name: right_sole_link
+      estimate_position: true
+      estimate_orientation: true
+
+    - link_name: left_sole_link
+      estimate_position: true
+      estimate_orientation: true
+    
+     
+
+  

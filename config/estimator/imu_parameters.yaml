@@ -1,0 +1,11 @@
+estimator_parameters:
+
+  imu_parameters:
+    position_evolution_noise: 1e-3
+    velocity_evolution_noise:  1e-5
+    rotation_evolution_noise:  1e-5
+    linear_acceleration_bias_noise:  1e-6
+    angular_velocity_bias_noise:  1e-6
+    enable_angular_velocity_bias_estimation: false
+    enable_linear_acceleration_bias_estimation: false
+    gravity: [0., 0., -9.81]

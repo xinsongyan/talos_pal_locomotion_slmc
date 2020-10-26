@@ -1,0 +1,49 @@
+goals:
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+# - target_position: [0.0, -0.5, 0.2]
+#   target_orientation: [-0.5, -0.0, 0]
+#   target_duration: 2.0 
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 0.9
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 0.9
+ - target_position: [-0.4, -0.2, 0.2]
+   target_orientation: [0, 0.5, 0]
+   target_duration: 1.5
+ - target_position: [0.4, -0.2, 0.2]
+   target_orientation: [0, -0.5, 0]
+   target_duration: 1.5
+ - target_position: [0.0, -0.2, 0.2]
+   target_orientation: [0., 0., 0.]
+   target_duration: 2.0 

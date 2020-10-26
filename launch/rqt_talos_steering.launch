@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <node name="rqt_talos_steering"
+        pkg="rqt_robot_steering" type="rqt_robot_steering" output="screen">
+        <param name="default_topic" value="/biped_walking_dcm_controller/cmd_vel"/>
+        <param name="default_vx_max" value="0.4"/>
+        <param name="default_vx_min" value="-0.4"/>
+        <param name="default_vw_max" value="0.75"/>
+        <param name="default_vw_min" value="-0.75"/>
+  </node>
+</launch>
+

@@ -1,0 +1,15 @@
+## Loads the imu information on top of the info in sensors.yaml
+# imu:
+#   base_imu:
+#     frame: imu_link
+
+## Replaces the imu info in the controller_parameters_common.yaml
+# imu_frame_name: imu_link
+# imu_name: base_imu
+
+## Replaces the imu information in estimator/kinematic_estimator_params.yaml
+# estimator_parameters:
+  # imu_link_frame_name: imu_link
+  # use_imu_filtered_angular_vel: true
+  # enable_bias_estimation: true
+  # freeze_foot_height: false

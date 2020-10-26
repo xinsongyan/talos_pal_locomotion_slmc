@@ -1,0 +1,7 @@
+type: pal_locomotion::BipedInverseDynamicsMonitorController
+
+dt: 0.001
+
+left_foot_link: left_sole_link
+right_foot_link: right_sole_link
+floating_base_topic: /floating_base_pose

@@ -1,0 +1,11 @@
+TestParameters:
+    goal_tolerance:
+     position: 0.2
+     velocity: 5.0
+     acceleration: 5.0
+     name: ""
+     time_sec: 10
+    test_duration_sec: 50.0
+    floating_base_topic: "/floating_base_pose_simulated"
+    final_position: [0.0, 0.0, 0.985]
+    final_position_tolerance: [0.15, 0.15, 0.2]

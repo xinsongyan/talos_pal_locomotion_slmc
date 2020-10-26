@@ -1,0 +1,25 @@
+TestParameters:
+    model_name: lower_body_torso_head
+
+    ds_duration_sec: 0.2
+    ss_duration_sec: 3.0
+
+    linear_velocity: [0.06, 0.0, 0.0]
+    angular_velocity: [0.0, 0.0, 0.15]
+
+    foot_step_position_adjustment: false
+    foot_step_time_adjustment: false
+
+    test_duration_sec: 60.0
+
+    final_position: [0.375, 0.25, 1.0]
+    final_position_tolerance: [0.15, 0.13, 0.3]
+
+    floating_base_topic: "/floating_base_pose_simulated"
+
+    goal_tolerance:
+        position: 0.2
+        velocity: 5.0
+        acceleration: 5.0
+        name: ""
+        time_sec: 10

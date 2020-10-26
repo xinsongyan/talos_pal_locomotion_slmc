@@ -1,0 +1,6 @@
+z_height: 0.88
+static_walk_action_parameters:
+  step_saggital_bounds: [-0.3, 0.3]
+  step_coronal_bounds: [0.16, 0.45]
+  step_rotational_bounds: [-0.1, 0.3]
+  step_axial_bounds: [-0.1, 0.25]

@@ -1,0 +1,6 @@
+open_loop_com_tracking: false
+
+balancing_action_parameters:
+  reference_type: "ref_pose_minjerk_topic"
+  one_leg_support: "right"
+  swing_leg_relative_position: [0, 0.03, 0.15]

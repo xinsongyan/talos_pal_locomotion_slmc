@@ -1,0 +1,194 @@
+if(CATKIN_ENABLE_TESTING)
+
+    find_package(rostest REQUIRED)
+    find_package(catkin REQUIRED COMPONENTS ${CATKIN_COMPONENTS} eigen_checks pal_physics_simulator pal_test_utils pal_configuration_initializer pal_control_msgs
+        controller_manager_msgs gazebo_msgs)
+
+    include_directories(
+        include
+        )
+
+    include_directories(
+        SYSTEM
+        ${catkin_INCLUDE_DIRS}
+        )
+
+    add_rostest(static_walk_launch.test)
+    add_rostest(dynamic_balancing_launch.test)
+
+
+    catkin_add_executable_with_gtest(dynamic_walk_test dynamic_walk.cpp)
+    target_link_libraries(dynamic_walk_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(dynamic_balancing_test dynamic_balancing.cpp)
+    target_link_libraries(dynamic_balancing_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(static_walk_test static_walk.cpp)
+    target_link_libraries(static_walk_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(static_stepping_test static_stepping.cpp)
+    target_link_libraries(static_stepping_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(dynamic_stepping_test dynamic_stepping.cpp)
+    target_link_libraries(dynamic_stepping_test ${catkin_LIBRARIES})
+
+    # Moving support test
+    catkin_add_executable_with_gtest(dynamic_moving_support_test dynamic_moving_support.cpp)
+    target_link_libraries(dynamic_moving_support_test ${catkin_LIBRARIES})
+
+    # Moving support test
+    catkin_add_executable_with_gtest(standing_test standing.cpp)
+    target_link_libraries(standing_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(dcm_monitor_test dcm_monitor.cpp)
+    target_link_libraries(dcm_monitor_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(contact_monitor_test contact_monitor.cpp)
+    target_link_libraries(contact_monitor_test ${catkin_LIBRARIES})
+
+    catkin_add_executable_with_gtest(swing_interpolator_test swing_interpolator.cpp)
+    target_link_libraries(swing_interpolator_test ${catkin_LIBRARIES})
+
+    set(SIMULATOR_GUI false)
+
+    if(DISABLE_EXTENDED_TESTS)
+        set(ROBOT full_v2)
+        set(SIMULATOR pal_physics_simulator)
+        set(ESTIMATOR kinematic_estimator_params)
+
+        add_rostest(dynamic_walk.test
+            DEPENDENCIES dynamic_walk_test
+            ARGS gui:=${SIMULATOR_GUI} walk_type:=walk_forward robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+        # one gazebo test
+        add_rostest(dynamic_walk.test
+            DEPENDENCIES dynamic_walk_test
+            ARGS gui:=${SIMULATOR_GUI} walk_type:=walk_forward robot:=${ROBOT} simulator:=gazebo estimator:=${ESTIMATOR})
+
+        add_rostest(static_walk.test
+            DEPENDENCIES static_walk_test
+            ARGS gui:=${SIMULATOR_GUI} walk_type:=forward_rotate robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+        add_rostest(dynamic_stepping.test
+            DEPENDENCIES dynamic_stepping_test
+            ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+        add_rostest(static_stepping.test
+            DEPENDENCIES static_stepping_test
+            ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+
+        foreach(TYPE balancing_one_leg) # balancing_base_motion
+            add_rostest(dynamic_balancing.test
+                DEPENDENCIES dynamic_balancing_test
+                ARGS gui:=${SIMULATOR_GUI} balancing_type:=${TYPE} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+        endforeach()
+
+        add_rostest(dynamic_moving_support.test
+            DEPENDENCIES dynamic_moving_support_test
+            ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+        add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=gazebo estimator:=${ESTIMATOR})
+
+   	add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=pal_physics_simulator estimator:=${ESTIMATOR})
+
+        add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=pal_physics_simulator_with_actuators estimator:=${ESTIMATOR} actuators_sim:=true safety_override:=false)
+
+       add_rostest(dcm_monitor.test
+          DEPENDENCIES dcm_monitor_test)
+
+       add_rostest(contact_monitor.test
+          DEPENDENCIES contact_monitor_test
+          ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+      add_rostest(swing_interpolator.test
+         DEPENDENCIES swing_interpolator_test
+         ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+    else(DISABLE_EXTENDED_TESTS)
+        #
+        # brute force
+        #
+        foreach(ROBOT lower_body_torso_head full_v2)
+            foreach(ESTIMATOR estimator_simulator_feedback legged_switching_state_link_position_estimator kinematic_estimator_params)
+                add_rostest(dynamic_moving_support.test
+                    DEPENDENCIES dynamic_moving_support_test
+                    ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+                foreach(SIMULATOR pal_physics_simulator gazebo)
+                    add_rostest(dynamic_walk.test
+                        DEPENDENCIES dynamic_walk_test
+                        ARGS gui:=${SIMULATOR_GUI} walk_type:=walk_forward robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+                    add_rostest(static_walk.test
+                        DEPENDENCIES static_walk_test
+                        ARGS gui:=${SIMULATOR_GUI} walk_type:=forward_rotate robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+                    foreach(TYPE balancing_one_leg) # balancing_base_motion
+                        add_rostest(dynamic_balancing.test
+                            DEPENDENCIES dynamic_balancing_test
+                            ARGS gui:=${SIMULATOR_GUI} balancing_type:=${TYPE} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+                    endforeach()
+                endforeach()
+            endforeach()
+        endforeach()
+
+        #
+        # the following tests are not executed for all combinations of parameters.
+        #
+        set(ROBOT full_v2)
+        set(SIMULATOR pal_physics_simulator)
+        set(ESTIMATOR kinematic_estimator_params)
+
+        foreach(TYPE balancing_base_motion)
+            add_rostest(dynamic_balancing.test
+                DEPENDENCIES dynamic_balancing_test
+                ARGS gui:=${SIMULATOR_GUI} balancing_type:=${TYPE} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+        endforeach()
+
+        foreach(ROBOT lower_body_torso_head full_v2)
+            # does not work legged_switching_state_link_position_estimator
+            foreach(ESTIMATOR estimator_simulator_feedback kinematic_estimator_params)
+                foreach(SIMULATOR pal_physics_simulator gazebo)
+                    add_rostest(dynamic_stepping.test
+                        DEPENDENCIES dynamic_stepping_test
+                        ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+
+                    add_rostest(static_stepping.test
+                        DEPENDENCIES static_stepping_test
+                        ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=${SIMULATOR} estimator:=${ESTIMATOR})
+                endforeach()
+            endforeach()
+        endforeach()
+
+      	add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=gazebo estimator:=${ESTIMATOR})
+
+   	add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=pal_physics_simulator estimator:=${ESTIMATOR})
+
+        add_rostest(standing.test
+           DEPENDENCIES standing_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} simulator:=pal_physics_simulator_with_actuators estimator:=${ESTIMATOR} actuators_sim:=true safety_override:=false)
+
+       add_rostest(dcm_monitor.test
+           DEPENDENCIES dcm_monitor_test)
+
+       add_rostest(contact_monitor.test
+           DEPENDENCIES contact_monitor_test
+           ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+       add_rostest(swing_interpolator.test
+          DEPENDENCIES swing_interpolator_test
+          ARGS gui:=${SIMULATOR_GUI} robot:=${ROBOT} estimator:=${ESTIMATOR})
+
+    endif(DISABLE_EXTENDED_TESTS)
+endif()

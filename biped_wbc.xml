@@ -1,0 +1,28 @@
+<library path="lib/libtalos_pal_locomotion">
+
+  <class name="pal_locomotion::WbcWeightedDynamicCopTALOS" type="pal_locomotion::WbcWeightedDynamicCopTALOS" base_class_type="pal_locomotion::BipedWbcBase">
+    <description>
+      TALOS biped wbc
+    </description>
+  </class>
+
+  <class name="pal_locomotion::WalkingWBCTalosLowerBodyTorsoHead" type="pal_locomotion::WalkingWBCTalosLowerBodyTorsoHead" base_class_type="pal_locomotion::BipedWbcBase">
+    <description>
+      TALOS biped wbc
+    </description>
+  </class>
+
+  <class name="pal_locomotion::WbcWeightedDynamicHierarquicalCopTALOS" type="pal_locomotion::WbcWeightedDynamicHierarquicalCopTALOS" base_class_type="pal_locomotion::BipedWbcBase">
+    <description>
+      TALOS biped wbc
+    </description>
+  </class>
+
+  <class name="pal_locomotion::WalkingWBCTalosFixedUpperBody" type="pal_locomotion::WalkingWBCTalosFixedUpperBody" base_class_type="pal_locomotion::BipedWbcBase">
+   <description>
+      TALOS biped wbc
+   </description>
+  </class>
+
+</library>
+

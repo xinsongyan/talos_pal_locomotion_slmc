@@ -1,0 +1,74 @@
+TestParameters:
+    ds_duration_sec: 0.1
+    ss_duration_sec: 0.7
+
+    foot_step_position_adjustment: false
+    foot_step_time_adjustment: false
+
+    test_duration_sec: 30.0
+
+    final_position_tolerance: [0.03, 0.03, 0.02]
+    final_orientation_tolerance: 0.05
+
+    floating_base_topic: "/floating_base_pose_simulated"
+    joint_states_topic: "/joint_states"
+
+    left_foot_link: left_sole_link
+    right_foot_link: right_sole_link
+
+    goal_tolerance:
+        position: 0.2
+        velocity: 5.0
+        acceleration: 5.0
+        name: ""
+        time_sec: 10
+
+    steps:
+        - left_or_right: RIGHT
+          position: [0.2, -0.06]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [0.3, 0.11]
+          orientation_angle: 0
+
+        - left_or_right: RIGHT
+          position: [0.5, -0.10]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [0.4, 0.07]
+          orientation_angle: 0
+
+        - left_or_right: RIGHT
+          position: [0.3, -0.09]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [0.6, 0.15]
+          orientation_angle: 0
+
+        - left_or_right: RIGHT
+          position: [0.7, -0.05]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [0.8, 0.20]
+          orientation_angle: 0
+
+        - left_or_right: RIGHT
+          position: [1.1, 0.05]
+          orientation_angle: 0
+
+        - left_or_right: LEFT
+          position: [1.1, 0.30]
+          orientation_angle: 0.20
+
+        - left_or_right: RIGHT
+          position: [1.3, 0.10]
+          orientation_angle: 0.40
+
+        - left_or_right: LEFT
+          position: [1.2, 0.40]
+          orientation_angle: 0.60
+

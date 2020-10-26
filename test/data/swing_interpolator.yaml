@@ -1,0 +1,21 @@
+TestParameters:
+    ds_duration_sec: 2.0
+    ss_duration_sec: 5.0
+
+    test_duration_sec: 180.0
+
+    final_position_tolerance: 0.014
+    final_orientation_tolerance: 0.05
+
+    floating_base_topic: "/floating_base_pose_simulated"
+    joint_states_topic: "/joint_states"
+
+    left_foot_link: left_sole_link
+    right_foot_link: right_sole_link
+
+    goal_tolerance:
+        position: 0.2
+        velocity: 5.0
+        acceleration: 5.0
+        name: ""
+        time_sec: 30

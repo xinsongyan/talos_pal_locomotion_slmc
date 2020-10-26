@@ -1,0 +1,29 @@
+<launch>
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find talos_pal_locomotion)/test/rosconsole.config"/>
+
+
+    <!--
+    -->
+    <include file="$(find talos_pal_locomotion)/test/dynamic_balancing.launch">
+        <arg name="simulator" value="pal_physics_simulator" />
+        <arg name="gui" default="false"/>
+        <arg name="speedrun" default="true"/>
+        <arg name="headless" default="true"/>
+    </include>
+
+
+    <!--
+         test
+    -->
+    <test   name="publishtest"
+            test-name="publishtest_talos_pal_locomotion_dynamic_balancing"
+            pkg="rostest"
+            type="publishtest">
+        <rosparam>
+            topics:
+                -   name: /joint_states
+                    timeout: 10
+                    negative: False
+        </rosparam>
+    </test>
+</launch>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find talos_pal_locomotion)/test/rosconsole.config"/>
+
+  <arg name="speedrun" default="true"/>
+  <arg name="headless" default="true"/>
+  <arg name="log_introspection_data" default="false"/>
+  <arg name="gui" default="$(eval 'true' != optenv('CI_BUILD', 'false'))"/>
+
+  <arg name="local_joint_control_type" default="direct_torque_control"/>
+  <arg name="local_joint_control_pkg" default="pal_local_joint_control"/>
+
+  <param name="/use_sim_time" value="true" type="bool"/>
+
+  <!-- Load TALOS description -->
+  <!-- Load TALOS description -->
+  <include file="$(find talos_description)/robots/upload.launch">
+      <arg name="foot_collision" default="thinbox"/>
+      <arg name="robot" value="full_v2" />
+  </include>
+
+  <include file="$(find talos_pal_locomotion)/launch/simulator/gazebo.launch">
+    <arg name="robot" value="full_v2" />
+    <arg name="speedrun" value="$(arg speedrun)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+  <include file="$(find talos_pal_locomotion)/launch/robot_control_parameters.launch">
+    <arg name="robot" value="full_v2" />
+    <arg name="estimator" value="kinematic_estimator_params"/>
+    <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+    <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)"/>
+  </include>
+  
+  <node name="rviz" pkg="rviz" type="rviz"/>
+
+  <group if="$(arg log_introspection_data)">
+    <node
+      name="rosbag_recorder"
+      pkg="rosbag"
+      type="record"
+      args="/introspection_data/full -o /tmp/build_output/dcm_monitor --lz4 --size 512"/>
+  </group>
+
+  <test
+   test-name="dcm_monitor"
+   pkg="talos_pal_locomotion"
+   type="dcm_monitor_test" time-limit="80.0"/>
+
+</launch>

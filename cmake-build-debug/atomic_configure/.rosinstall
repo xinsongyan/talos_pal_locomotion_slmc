@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/xin/catkin_ws/src/talos_pal_locomotion/cmake-build-debug/devel/setup.sh

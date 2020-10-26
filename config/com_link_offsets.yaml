@@ -1,0 +1,13 @@
+offsets:
+ - link_id: "base_link"
+   com_offset: [0.07, 0, 0.]
+ - link_id: "torso_2_link"
+   com_offset: [0.07, 0, 0.]
+ - link_id: "leg_right_3_link"
+   com_offset: [0.05, 0, 0.]
+ - link_id: "leg_right_4_link"
+   com_offset: [0.05, 0, 0.]
+ - link_id: "leg_left_3_link"
+   com_offset: [0.05, 0, 0.]
+ - link_id: "leg_left_4_link"
+   com_offset: [0.05, 0, 0.]

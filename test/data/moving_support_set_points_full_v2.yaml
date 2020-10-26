@@ -1,0 +1,126 @@
+model_name: full_v2
+
+goal_tolerance:
+    position: 0.2
+    velocity: 5.0
+    acceleration: 5.0
+    name: ""
+    time_sec: 10
+
+
+final_position: [0., 0., 0.9]
+final_position_tolerance: [0.2, 0.2, 0.2]
+
+set_points:
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0.3, 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., -0.0]
+      rpy: [0.3, 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.3, 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.0, 0.0]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0., 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0.3, 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0.3, 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.3, 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.0, 0.0]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0.3, 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., -0.0]
+      rpy: [0.3, 0.3, 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.3, 0.1]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.0, 0.0]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0.3, 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0., 0., 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0.3, 0., 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.0]
+      rpy: [0.3, 0.3, 0.]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.3, 0.3]
+    duration: 0.4
+  - pose:
+      position: [0., 0., 0.]
+      rpy: [0., 0.0, 0.0]
+    duration: 0.4

@@ -1,0 +1,11 @@
+force_torque:
+  left_ankle_ft:
+    frame: left_sole_link
+    report: left_sole_link
+  right_ankle_ft:
+    frame: right_sole_link
+    report: right_sole_link
+
+imu:
+  base_imu:
+    frame: imu_link

@@ -1,0 +1,20 @@
+<launch>
+
+  <arg name="robot"/>
+  <arg name="speedrun"/>
+  <arg name="gui"/>
+  <arg name="headless"/>
+  <arg name="world" default="empty"/>
+  <arg name="recording" default="false"/>
+  <arg name="extra_gazebo_args" default=""/>
+
+  <include file="$(find talos_gazebo)/launch/talos_gazebo.launch" >
+    <arg name="robot" value="$(arg robot)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="load_model" value="false"/>
+    <arg name="world" value="$(arg world)"/>
+    <arg name="recording" value="$(arg recording)"/>
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+  </include>
+
+</launch>

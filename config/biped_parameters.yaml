@@ -1,0 +1,70 @@
+foot_description:
+   foot_with: 0.10
+   foot_length: 0.2
+   foot_height: 0.02
+
+leg_kinematic_description:
+   hip_spacing: 0.16
+   base_hip_height: 0.14353
+   femur_length: 0.380
+   tibia_length: 0.320
+   ankle_height: 0.107
+
+gravity: 9.81
+z_height: 0.87
+swing_leg_penetration_ground: 0.0
+mass: 100.0
+icp_gain: 1.2
+swing_leg_height: 0.08
+minimum_contact_force: 50.0
+percentage_time_to_abort_step: 0.8
+default_ds_time: 2.0
+default_ss_time: 2.0
+
+com_bias: [0., 0., 0.]
+
+postmature_contact_height: 0.02
+
+torso_link_name: torso_2_link
+left_foot_name: left_sole_link
+right_foot_name: right_sole_link
+
+left_ankle_name: leg_left_5_link
+right_ankle_name: leg_right_5_link
+
+left_ee_name: gripper_left_base_link
+right_ee_name: gripper_right_base_link
+
+force_torque_sensor_filter_type: FirstOrderFilter3d
+force_torque_sensor_filter_params:
+  filter_parameters:
+   - order: 5
+     type: LowPass
+     composition_type: Sequence
+     cutoff1: 150.0
+     cutoff2: 0.0
+
+open_loop_com_tracking: true
+dcm_monitor: true
+foot_contact_monitor: true
+foot_contact_thresh:  180
+
+balancing_action_parameters:
+  reference_type: "ref_pose_minjerk_topic"
+  one_leg_support: ""
+  swing_leg_relative_position: [0, 0, 0]
+
+static_walk_action_parameters:
+  acceptable_com_ds_reference_error: 0.03
+  acceptable_com_ss_reference_error: 0.015
+  default_foot_separation: 0.18
+  rotational_foot_separation: 0.25
+  preferred_com_velocity: 0.03
+  step_saggital_bounds: [-0.15, 0.2]
+  step_coronal_bounds: [0.16, 0.3]
+  step_rotational_bounds: [-0.1, 0.3]
+  step_axial_bounds: [-0.1, 0.1]
+  static_walk_offset: [0., 0.015]
+  use_rate_limited_dcm: false
+  integral_correction: 0.0
+  hybrid_factor: 0.5

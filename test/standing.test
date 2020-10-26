@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find talos_pal_locomotion)/test/rosconsole.config"/>
+
+  <arg name="robot"/>
+
+  <arg name="gui" default="false"/>
+  <arg name="speedrun" default="true"/>
+  <arg name="headless" default="true"/>
+  <arg name="debug" default="false"/>
+  <arg name="actuators_sim" default="false"/>
+  <arg name="safety_override" default=""/>
+  <arg name="controller_name" default="biped_walking_dcm_controller"/>
+  <arg name="estimator" default="estimator_simulator_feedback"/>
+
+  <arg name="log_introspection_data" default="false"/>
+
+  <arg name="local_joint_control_type"  default="$(eval {False: 'direct_torque_control', True: 'inertia_shaping_effort_analytic_dob_control'}.get(arg('actuators_sim'), ''))"/>
+  <arg name="local_joint_control_pkg"  default="$(eval {False: 'pal_local_joint_control', True: 'inertia_shaping_effort_control'}.get(arg('actuators_sim'), ''))"/>
+
+  <arg name="wrist_local_joint_control_type"  default="$(eval {False: 'direct_torque_control', True: 'direct_effort_leaky_integrator_control'}.get(arg('actuators_sim'), ''))"/>
+  <arg name="wrist_local_joint_control_pkg"  default="pal_local_joint_control"/>
+
+  <param name="/use_sim_time" value="true" type="bool"/>
+
+  <!-- Load TALOS description -->
+  <include file="$(find talos_description)/robots/upload.launch">
+      <arg name="foot_collision" default="thinbox"/>
+      <arg name="robot" value="$(arg robot)" />
+  </include>
+
+  <param name="/TestParameters/model_name" value="$(arg robot)" type="string" />
+  <rosparam command="load" file="$(find talos_pal_locomotion)/test/data/stance.yaml" />
+
+  <include file="$(find talos_pal_locomotion)/launch/robot_control_parameters.launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="estimator" value="$(arg estimator)"/>
+    <arg name="controller_name" value="$(arg controller_name)"/>
+    <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+    <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)"/>
+    <arg name="wrist_local_joint_control_type" value="$(arg wrist_local_joint_control_type)"/>
+    <arg name="wrist_local_joint_control_pkg" value="$(arg wrist_local_joint_control_pkg)"/>
+    <arg name="safety_override" value="$(arg safety_override)"/>
+    <arg name="simulation" value="true"/>
+    <arg name="disable_safety_for_joints" default="arm_left_7_joint,arm_right_7_joint"/>
+  </include>
+
+  <include file="$(find talos_pal_locomotion)/launch/simulator/$(arg simulator).launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="speedrun" value="$(arg speedrun)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+  <include file="$(find trajectory_dispatcher)/launch/dispatcher_controller.launch" />
+
+  <group if="$(arg log_introspection_data)">
+    <node
+      name="rosbag_recorder"
+      pkg="rosbag"
+      type="record"
+      args="/introspection_data/full -o /tmp/build_output/static_walk --lz4 --size 512"/>
+  </group>
+
+  <group unless="$(eval arg('debug'))">
+   <test
+    test-name="standing_test_$(arg simulator)_$(arg robot)_$(arg estimator)"
+    pkg="talos_pal_locomotion"
+    type="standing_test" time-limit="1000.0"/>
+  </group>
+
+  <!-- test name must be parametrized to prevent overriding of results -->
+  <group if="$(arg debug)">
+   <test
+    test-name="standing_test_$(arg simulator)_$(arg robot)_$(arg estimator)"
+    launch-prefix="gdb -ex run --args"
+    pkg="talos_pal_locomotion"
+    type="standing_test" time-limit="1000.0"/>
+  </group>
+
+  <rosparam param="$(arg controller_name)/biped_parameters/foot_contact_monitor">false</rosparam>
+
+</launch>

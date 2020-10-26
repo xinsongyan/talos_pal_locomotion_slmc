@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="robot" default="full_v2" />
+
+  <arg name="simulation" default="true"/>
+  <arg name="estimator" default="estimator_simulator_feedback"/>
+  <arg name="controller_name" default="biped_walking_dcm_controller"/>
+  <arg name="controller_pkg_name" default="talos_controller_configuration"/>
+  <arg name="wbc_parameters" default=""/>
+  <arg name="biped_parameters" default=""/>
+  <arg name="local_joint_control_type" default=""/>
+  <arg name="local_joint_control_pkg" default="$(arg local_joint_control_type)"/>
+  <arg name="wrist_local_joint_control_type" default="$(arg local_joint_control_type)"/>
+  <arg name="wrist_local_joint_control_pkg" default="$(arg local_joint_control_pkg)"/>
+  <arg name="safety_override" default=""/>
+  <arg name="disable_safety_for_joints" default=""/>
+  <arg name="imu_type" default="base_imu"/>
+
+  <arg name="default_configuration_type" default="locomotion"/>
+
+  <rosparam command="delete" param="/$(arg controller_name)" />
+
+  <rosparam command="load" file="$(find talos_description)/config/default_configuration_$(arg default_configuration_type).yaml" />
+
+
+  <!-- walking controller configuration -->
+  <param if="$(eval arg('robot') == 'full_v2')"
+      name="/$(arg controller_name)/biped_wbc_type" value="pal_locomotion::WbcWeightedDynamicCopTALOS" type="string"/>
+  <param if="$(eval arg('robot') == 'lower_body_torso_head')"
+      name="/$(arg controller_name)/biped_wbc_type" value="pal_locomotion::WalkingWBCTalosLowerBodyTorsoHead" type="string"/>
+  <param if="$(eval arg('robot') == 'full_v2_fixed_upper_body')"
+      name="/$(arg controller_name)/biped_wbc_type" value="pal_locomotion::WalkingWBCTalosFixedUpperBody" type="string"/>
+
+  <!-- biped configuration -->
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/biped_parameters.yaml" ns="$(arg controller_name)/biped_parameters"/>
+  <rosparam if="$(eval arg('biped_parameters') != '')" command="load"
+	  file="$(eval find('talos_pal_locomotion') + '/config/extras/' + arg('biped_parameters') + '.yaml')" ns="$(arg controller_name)/biped_parameters"/>
+
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/controller_parameters_common.yaml" ns="$(arg controller_name)"/>
+
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/sensors.yaml" ns="$(arg controller_name)"/>
+
+  <include file="$(find talos_wbc)/launch/talos_capsule_description.launch"/>
+
+  <!-- wbc controller configuration -->
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/wbc_common_parameters.yaml" ns="$(arg controller_name)/wbc_parameters"/>
+  <rosparam if="$(eval arg('wbc_parameters') != '')" command="load"
+      file="$(arg wbc_parameters)" ns="$(arg controller_name)/wbc_parameters"/>
+
+  <group if="$(eval arg('robot') == 'full_v2')">
+   <group if="$(eval arg('simulation') == false)">
+
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/com_link_offsets.yaml" ns="$(arg controller_name)/com_offset_parameters"/>
+
+   <!-- Local joint control -->
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="lower_body"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="direct_effort_leaky_integrator_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="open_loop" value="true"/>
+      <arg name="robot" value="head"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(eval find(arg('local_joint_control_pkg')) + '/launch/inertia_shaping_differential_effort_analytic_dob_control.launch')" >
+      <arg name="controller_pkg_name" value="$(arg controller_pkg_name)"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="joint_name_1" value="torso_1_joint"/>
+      <arg name="joint_name_2" value="torso_2_joint"/>
+      <arg name="transmission_name" value="talos_torso_trans"/>
+      <arg name="safety_override" value="$(eval ('' if not ('torso_1_joint' in arg('disable_safety_for_joints') or 'torso_2_joint' in arg('disable_safety_for_joints')) else (arg('safety_override') if arg('safety_override') != '' else 'false')))"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="inertia_shaping_effort_simple_dob_control"/>
+      <arg name="local_joint_control_pkg" value="inertia_shaping_effort_control" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="direct_effort_leaky_integrator_control"/>
+      <arg name="local_joint_control_pkg" value="pal_local_joint_control" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="inertia_shaping_effort_simple_dob_control"/>
+      <arg name="local_joint_control_pkg" value="inertia_shaping_effort_control" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="direct_effort_leaky_integrator_control"/>
+      <arg name="local_joint_control_pkg" value="pal_local_joint_control" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="grippers"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+  </group>
+
+  <group if="$(eval arg('simulation') == true)">
+  <!-- Local joint control -->
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="lower_body"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="direct_position_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="open_loop" value="true"/>
+      <arg name="robot" value="head"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="torso"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg wrist_local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg wrist_local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg wrist_local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg wrist_local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="grippers"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+  </group>
+  </group>
+
+  <group if="$(eval arg('robot') == 'lower_body_torso_head')">
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="lower_body"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="head"/>
+      <arg name="open_loop" value="false"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="torso"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+  </group>
+
+  <group if="$(eval arg('robot') == 'full_v2_fixed_upper_body')">
+
+   <group if="$(eval arg('simulation') == true)">
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="lower_body"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="head"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="torso"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="grippers"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+  </group>
+
+
+   <group if="$(eval arg('simulation') == false)">
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="lower_body"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="head"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="torso"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_right"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="upper_arm_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="wrist_left"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+    <include file="$(find talos_controller_configuration)/launch/local_joint_control/launcher.launch">
+      <arg name="local_joint_control_type" value="no_control"/>
+      <arg name="ns" value="$(arg controller_name)"/>
+      <arg name="robot" value="grippers"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+    </include>
+  </group>
+  </group>
+
+  <param name="self_collision_blacklist" textfile="$(find talos_moveit_config)/config/talos.srdf" />
+
+  <!-- Load estimator configuration -->
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/estimator/$(arg estimator).yaml" ns="$(arg controller_name)"/>
+
+  <rosparam command="load"
+      file="$(find talos_pal_locomotion)/config/estimator/imu_parameters.yaml" ns="$(arg controller_name)"/>
+
+  <rosparam command="load" 
+        file="$(find talos_pal_locomotion)/config/biped_parameters_$(arg robot).yaml" ns="$(arg controller_name)/biped_parameters"/>
+
+  <group if="$(eval arg('simulation') == true)">
+    <rosparam command="load" 
+      file="$(find talos_pal_locomotion)/config/biped_parameters_simulation.yaml" ns="$(arg controller_name)/biped_parameters"/>
+  </group>
+
+  <!-- Load IMU specific parameters -->
+  <rosparam command="load" file="$(find talos_pal_locomotion)/config/$(arg imu_type)_parameters.yaml" ns="$(arg controller_name)"/>
+
+</launch>

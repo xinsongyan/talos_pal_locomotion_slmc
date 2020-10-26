@@ -1,0 +1,8 @@
+biped_walking_dcm_controller:
+
+  estimator_type: legged_state_estimator::SimpleLeggedStateEstimator
+  estimator:
+
+    use_bias_estimation: False
+    imu_linear_acceleration_filter_gain: 1.0
+    imu_angular_acceleration_filter_gain: 1.0

@@ -1,0 +1,1 @@
+estimator_type: legged_state_estimator::SimulatorGroundTruthStateEstimator

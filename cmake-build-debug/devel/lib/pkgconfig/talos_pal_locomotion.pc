@@ -1,0 +1,8 @@
+prefix=/home/xin/catkin_ws/src/talos_pal_locomotion/cmake-build-debug/devel
+
+Name: talos_pal_locomotion
+Description: Description of talos_pal_locomotion
+Version: 0.2.15
+Cflags: 
+Libs: -L/home/xin/catkin_ws/src/talos_pal_locomotion/cmake-build-debug/devel/lib 
+Requires: pal_physics_utils pal_locomotion pal_locomotion_msgs terrain_generation reflexxes_adapter pal_locomotion_dcm_planner backward_ros kinematic_state_estimator pal_locomotion_actions inertia_shaping_effort_control

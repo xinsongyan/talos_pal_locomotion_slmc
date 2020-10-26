@@ -1,0 +1,60 @@
+<launch>
+
+  <arg name="robot" default="full_v2" />
+  <arg name="simulator" default="disable" />
+
+  <arg name="gui" default="true"/>
+  <arg name="speedrun" default="true"/>
+  <arg name="headless" default="false"/>
+
+
+  <!-- robot -->
+  <arg if="$(eval arg('simulator') == 'disable')" name="estimator" default="kinematic_estimator_params"/>
+
+  <arg if="$(eval arg('simulator') == 'disable')" name="local_joint_control_type" default="inertia_shaping_effort_analytic_dob_control"/>
+  <arg if="$(eval arg('simulator') == 'disable')" name="local_joint_control_pkg" default="inertia_shaping_effort_control"/>
+
+  <include if="$(eval arg('simulator') != 'disable')" file="$(find talos_description)/robots/upload.launch">
+      <arg name="foot_collision" default="thinbox"/>
+      <arg name="robot" value="$(arg robot)" />
+  </include>
+
+
+  <!-- simulator -->
+  <arg if="$(eval arg('simulator') != 'disable')" name="estimator" default="kinematic_estimator_params"/>
+
+  <arg if="$(eval arg('simulator') != 'disable')" name="local_joint_control_type" default="direct_torque_control"/>
+  <arg if="$(eval arg('simulator') != 'disable')" name="local_joint_control_pkg" default="pal_local_joint_control"/>
+
+
+
+  <include file="$(find talos_pal_locomotion)/launch/talos_dcm_walking_controller.launch">
+    <arg name="robot" default="$(arg robot)" />
+    <arg name="estimator" default="$(arg estimator)"/>
+    <arg name="local_joint_control_type" default="$(arg local_joint_control_type)"/>
+    <arg name="local_joint_control_pkg" default="$(arg local_joint_control_pkg)"/>
+    <arg if="$(eval arg('simulator') == 'disable')" name="simulation" default="false"/>
+    <arg if="$(eval arg('simulator') != 'disable')" name="simulation" default="true"/>
+  </include>
+
+
+  <group if="$(eval arg('simulator') != 'disable')">
+    <param name="/use_sim_time" value="true" type="bool"/>
+
+    <include file="$(find talos_pal_locomotion)/launch/simulator/$(arg simulator).launch">
+      <arg name="robot" value="$(arg robot)" />
+      <arg name="speedrun" value="$(arg speedrun)" />
+      <arg name="headless" value="$(arg headless)" />
+      <arg name="gui" value="$(arg gui)" />
+    </include>
+  </group>
+
+
+  <include file="$(find trajectory_dispatcher)/launch/dispatcher_controller.launch" />
+
+  <include file="$(find pal_locomotion)/launch/push_action.launch">
+    <arg name="action" value="pal_locomotion::BalancingAction" />
+    <arg name="required" value="false" />
+  </include>
+
+</launch>

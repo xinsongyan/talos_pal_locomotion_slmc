@@ -1,0 +1,60 @@
+<launch>
+
+  <arg name="walk_type"/>
+  <arg name="simulator"/>
+  <arg name="robot"/>
+
+  <arg name="gui" default="false"/>
+  <arg name="speedrun" default="true"/>
+  <arg name="headless" default="true"/>
+
+  <arg name="estimator" default="estimator_simulator_feedback"/>
+
+  <arg name="log_introspection_data" default="false"/>
+
+  <arg name="local_joint_control_type" default="direct_torque_control"/>
+  <arg name="local_joint_control_pkg" default="pal_local_joint_control"/>
+
+  <param name="/use_sim_time" value="true" type="bool"/>
+
+  <!-- Load TALOS description -->
+  <include file="$(find talos_description)/robots/upload.launch">
+      <arg name="foot_collision" default="thinbox"/>
+      <arg name="robot" value="$(arg robot)" />
+  </include>
+
+  <include file="$(find talos_pal_locomotion)/launch/robot_control_parameters.launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="estimator" value="$(arg estimator)"/>
+    <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+    <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)"/>
+  </include>
+
+
+  <include file="$(find talos_pal_locomotion)/launch/simulator/$(arg simulator).launch">
+    <arg name="robot" value="$(arg robot)" />
+    <arg name="speedrun" value="$(arg speedrun)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+  <rosparam command="load"
+    file="$(find talos_pal_locomotion)/test/data/$(arg walk_type)_$(arg robot).yaml" />
+
+  <include file="$(find trajectory_dispatcher)/launch/dispatcher_controller.launch" />
+
+  <group if="$(arg log_introspection_data)">
+    <node
+      name="rosbag_recorder"
+      pkg="rosbag"
+      type="record"
+      args="/introspection_data/full -o /tmp/build_output/dynamic_walk --lz4 --size 512"/>
+  </group>
+
+  <!-- test name must be parametrized to prevent overriding of results -->
+  <test
+    test-name="dynamic_walk_test_$(arg simulator)_$(arg walk_type)_$(arg robot)_$(arg estimator)"
+    pkg="talos_pal_locomotion"
+    type="dynamic_walk_test" time-limit="1000.0"/>
+
+</launch>
