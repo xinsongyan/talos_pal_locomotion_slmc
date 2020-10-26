@@ -45,8 +45,8 @@ force_torque_sensor_filter_params:
      cutoff2: 0.0
 
 open_loop_com_tracking: true
-dcm_monitor: true
-foot_contact_monitor: true
+dcm_monitor: false
+foot_contact_monitor: false
 foot_contact_thresh:  180
 
 balancing_action_parameters:
