@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="robot" default="full_v2" />
+  <arg name="estimator" default="estimator_simulator_feedback"/>
+  <arg name="gui" default="true"/>
+  <arg name="local_joint_control_type" default="direct_torque_control"/>
+  <arg name="local_joint_control_pkg" default="pal_local_joint_control"/>
+  <arg name="simulation" default="true"/>
+  <arg name="wbc_parameters" default=""/>
+  <arg name="biped_parameters" default=""/>
+  <arg name="wrist_local_joint_control_type" default="direct_torque_control"/>
+  <arg name="wrist_local_joint_control_pkg" default="pal_local_joint_control"/>
+  <arg name="safety_override" default=""/>
+  <arg name="imu_type" default="base_imu"/>
+  <arg name="disable_safety_for_joints" default="
+                                                leg_left_1_joint,
+                                                leg_left_2_joint,
+                                                leg_left_3_joint,
+                                                leg_left_4_joint,
+                                                leg_left_5_joint,
+                                                leg_left_6_joint,
+                                                leg_right_1_joint,
+                                                leg_right_2_joint,
+                                                leg_right_3_joint,
+                                                leg_right_4_joint,
+                                                leg_right_5_joint,
+                                                leg_right_6_joint,
+                                                torso_1_joint,
+                                                torso_2_joint,
+                                                arm_left_1_joint,
+                                                arm_left_2_joint,
+                                                arm_left_3_joint,
+                                                arm_left_4_joint,
+                                                arm_left_5_joint,
+                                                arm_left_6_joint,
+                                                arm_left_7_joint,
+                                                arm_right_1_joint,
+                                                arm_right_2_joint,
+                                                arm_right_3_joint,
+                                                arm_right_4_joint,
+                                                arm_right_5_joint,
+                                                arm_right_6_joint,
+                                                arm_right_7_joint,
+                                                head_1_joint,
+                                                head_2_joint"/>
+
+  <include file="$(find talos_pal_locomotion)/launch/robot_control_parameters.launch">
+      <arg name="robot" value="$(arg robot)" />
+      <arg name="simulation" value="$(arg simulation)" />
+      <arg name="estimator" value="$(arg estimator)"/>
+      <arg name="local_joint_control_type" value="$(arg local_joint_control_type)"/>
+      <arg name="local_joint_control_pkg" value="$(arg local_joint_control_pkg)" />
+      <arg name="wrist_local_joint_control_pkg" value="$(arg wrist_local_joint_control_pkg)" />
+      <arg name="wrist_local_joint_control_type" value="$(arg wrist_local_joint_control_type)"/>
+      <arg name="wbc_parameters" default="$(arg wbc_parameters)"/>
+      <arg name="biped_parameters" default="$(arg biped_parameters)"/>
+      <arg name="safety_override" value="$(arg safety_override)"/>
+      <arg name="imu_type" value="$(arg imu_type)"/>
+      <arg name="disable_safety_for_joints" value="$(arg disable_safety_for_joints)"/>
+  </include>
+
+  <!-- Start rqt robot steering -->
+  <!-- <node if="$(arg gui)" name="rqt_robot_steering"
+        pkg="rqt_robot_steering" type="rqt_robot_steering" output="screen">
+        <param name="default_topic" value="biped_walking_dcm_controller/cmd_vel" />
+  </node> -->
+
+  <!-- Spawn controller -->
+  <node name="locomotion_spawner"
+        pkg="controller_manager" type="spawner" output="screen"
+        args="biped_walking_dcm_controller" />
+
+
+<!--
+  <node name="start_walking_continuous"
+        pkg="pal_locomotion_dcm_planner" type="start_walking_continious_dcm" output="screen"
+        args="-a false -t false -p Cubic -s Zero"/> -->
+
+</launch>
