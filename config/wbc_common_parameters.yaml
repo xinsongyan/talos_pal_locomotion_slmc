@@ -11,7 +11,7 @@ swing_leg_position_weight: 2.
 swing_leg_orientation_weight: 4.
 angular_momentum_weight: 0.05
 cop_tracking_weight: 0.05
-upper_body_joint_reference_weight: 0.1
+upper_body_joint_reference_weight: 1
 end_effector_position_weight: 0.0
 end_effector_orientation_weight: 0.0
 
