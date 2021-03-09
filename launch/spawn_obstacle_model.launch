@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+<node name="obstacle_spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+args="-file /home/pal/model_editor_models/obstacle/model.sdf -sdf -x 0.50 -y 0.0 -z 0.046 -R 0.0 -P 0.0 -Y 0.0 -model obstacle"/>
+</launch>
