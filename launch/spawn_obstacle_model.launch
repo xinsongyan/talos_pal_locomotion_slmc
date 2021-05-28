@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-<node name="obstacle_spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-args="-file /home/pal/model_editor_models/obstacle/model.sdf -sdf -x 0.50 -y 0.0 -z 0.046 -R 0.0 -P 0.0 -Y 0.0 -model obstacle"/>
+<!-- <node name="obstacle_spawn_urdf1" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"  -->
+<!-- args="-file /home/pal/model_editor_models/step_stone/model.sdf -sdf -x 0.3 -y 0.2 -z 0.1 -R 0.26179939 -P -0.26179939 -Y 0.0 -model step_stone1"/>  -->
+
+ <!-- <node name="obstacle_spawn_urdf2" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"  -->
+<!-- args="-file /home/pal/model_editor_models/step_stone/model.sdf -sdf -x 0.3 -y -0.2 -z 0.1 -R -0.26179939 -P 0.0 -Y 0.0 -model step_stone2"/> -->
+
+<!-- <node name="obstacle_spawn_urdf1" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"  -->
+<!-- args="-file /home/pal/model_editor_models/step_stone_10/model.sdf -sdf -x 0.4 -y 0.2 -z 0.01 -R 0.0 -P 0.0 -Y -1.57 -model step_stone1"/> -->
+<!-- <node name="obstacle_spawn_urdf2" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"   -->
+<!-- args="-file /home/pal/model_editor_models/step_stone_10/model.sdf -sdf -x 0.4 -y -0.2 -z 0.01 -R 0.0 -P 0.0 -Y 1.57 -model step_stone2"/>  -->
+<!-- <node name="obstacle_spawn_urdf3" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"   -->
+<!-- args="-file /home/pal/model_editor_models/step_stone_15/model.sdf -sdf -x 0.7 -y 0.2 -z 0.0 -R 0.0 -P 0.0 -Y -1.57 -model step_stone3"/>  -->
+<!-- <node name="obstacle_spawn_urdf4" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"   -->
+<!-- args="-file /home/pal/model_editor_models/step_stone_15/model.sdf -sdf -x 0.7 -y -0.2 -z 0.0 -R 0.0 -P 0.0 -Y 1.57 -model step_stone4"/> -->
+
+ <node name="obstacle_spawn_urdf1" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file $(find step_stone)/urdf/model.urdf -urdf -x 0.4 -y 0.2001 -z 0 -R 0.0 -P 0.0 -Y 1.5707963 -model step_stone1"/>
+
+
+  <node name="obstacle_spawn_urdf2" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file $(find step_stone)/urdf/model.urdf -urdf -x 0.4 -y -0.2001 -z 0 -R 0.0 -P 0.0 -Y -1.5707963 -model step_stone2"/>
+
 </launch>
