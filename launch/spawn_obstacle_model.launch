@@ -21,4 +21,9 @@
 
   <node name="obstacle_spawn_urdf2" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file $(find step_stone)/urdf/model.urdf -urdf -x 0.4 -y -0.2001 -z 0 -R 0.0 -P 0.0 -Y -1.5707963 -model step_stone2"/>
 
+ <node name="obstacle_spawn_urdf3" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file $(find step_stone)/urdf/model.urdf -urdf -x 0.8001 -y 0.2001 -z 0 -R 0.0 -P 0.0 -Y -1.5707963 -model step_stone3"/>
+
+
+  <node name="obstacle_spawn_urdf4" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file $(find step_stone)/urdf/model.urdf -urdf -x 0.8001 -y -0.2001 -z 0 -R 0.0 -P 0.0 -Y 1.5707963 -model step_stone4"/>
+
 </launch>
